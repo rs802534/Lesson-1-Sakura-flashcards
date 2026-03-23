@@ -262,11 +262,15 @@ body{ background:#fff0f5; color:var(--ink); font-family:'Sawarabi Mincho',serif;
   -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
   line-height:1; margin-bottom:12px; text-align:center;
 }
-.reading-main{
-  font-family:'Noto Serif JP',serif; font-size:17px; font-weight:300;
-  color:var(--purple); letter-spacing:4px; text-align:center; margin-bottom:4px;
+.furigana-wrap{
+  display:flex; flex-direction:column; align-items:center; margin-bottom:10px;
 }
-.reading-romaji{ font-size:12px; color:var(--ink-light); letter-spacing:2px; text-align:center; }
+.furigana-text{
+  font-family:'Noto Serif JP',serif; font-size:15px; font-weight:300;
+  color:var(--purple); letter-spacing:6px; text-align:center;
+  margin-bottom:4px; opacity:0.85;
+}
+.reading-romaji{ display:none; }
 
 /* BACK FACE */
 .back-meaning{
@@ -577,14 +581,16 @@ function cardHTML(){
       <div class="card-cat" id="front-cat"></div>
       <div class="known-badge">✓ Known</div>
       <div class="kanji-main" id="front-kanji"></div>
-      <div class="reading-main" id="front-reading"></div>
-      <div class="reading-romaji" id="front-romaji"></div>
+      <div class="furigana-wrap">
+        <div class="furigana-text" id="front-furigana"></div>
+      </div>
       <div class="card-hint">tap to reveal ✿</div>
     </div>
     <div class="card-face card-back" id="card-back">
       <div class="card-bar"></div>
       <div class="card-cat" id="back-cat"></div>
       <div class="back-sub" id="back-sub"></div>
+      <div class="furigana-text" id="back-furigana" style="font-size:17px;letter-spacing:4px;margin-bottom:6px;"></div>
       <div class="back-meaning" id="back-meaning"></div>
       <div class="back-divider"></div>
       <div class="back-context" id="back-context"></div>
@@ -615,11 +621,11 @@ function render(){
   document.getElementById('flip-hint').textContent='✿ tap card to reveal meaning ✿';
   document.getElementById('front-cat').textContent=card.cat;
   document.getElementById('front-kanji').textContent=card.kanji;
-  document.getElementById('front-reading').textContent=card.reading.split(' ')[0]||card.reading;
-  document.getElementById('front-romaji').textContent=card.reading;
+  document.getElementById('front-furigana').textContent=card.reading.split(' ')[0]||card.reading;
   document.getElementById('card-front').className='card-face'+(known?' is-known':'');
   document.getElementById('back-cat').textContent=card.cat;
-  document.getElementById('back-sub').textContent=card.kanji+' · '+card.reading;
+  document.getElementById('back-sub').textContent=card.kanji;
+  document.getElementById('back-furigana').textContent=card.reading.split(' ')[0]||card.reading;
   document.getElementById('back-meaning').textContent=card.meaning;
   document.getElementById('back-context').textContent=card.context;
   document.getElementById('back-sentence').textContent=card.sentence||'';
