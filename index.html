@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>桜フラッシュ — Sakura Flash</title>
-<link rel="manifest" href="sakura-manifest.json">
+<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#f2c4ce">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -14,377 +14,433 @@
 *{ box-sizing:border-box; margin:0; padding:0; }
 :root{
   --ink:#2c1810; --ink-mid:#5c3d2e; --ink-light:#9c7b6e; --ink-faint:#d4b8b0;
-  --paper:#fdf6f0; --paper2:#faeee8; --paper3:#f5e6dc;
-  --sakura1:#f2c4ce; --sakura2:#e8a4b4; --sakura3:#d4789a;
-  --sakura4:#c45880; --gold:#c9a84c; --moss:#7a9e7e; --sky:#a8c4d4;
-}
-body{
-  background:var(--paper);
-  color:var(--ink);
-  font-family:'Sawarabi Mincho',serif;
-  min-height:100vh;
-  overflow-x:hidden;
-  position:relative;
+  --paper:#fff8f5; --paper2:#ffeef5; --paper3:#ffe0ed;
+  --pk1:#ff85a1; --pk2:#ff4d82; --pk3:#e8006f;
+  --coral:#ff7c5c; --peach:#ffb347; --gold:#e8a020;
+  --purple:#c06090; --magenta:#e040a0; --deep:#8b1a5a;
+  --lavender:#d080c0; --rose:#ff2d78;
 }
 
-/* WATERCOLOUR BACKGROUND */
-.bg-wash{
+body{ background:#fff0f5; color:var(--ink); font-family:'Sawarabi Mincho',serif; min-height:100vh; overflow-x:hidden; position:relative; }
+
+/* ── LAYERED BACKGROUND ── */
+.bg-base{
   position:fixed; inset:0; z-index:0; pointer-events:none;
   background:
-    radial-gradient(ellipse 60% 40% at 10% 15%, #f2c4ce55 0%, transparent 70%),
-    radial-gradient(ellipse 40% 50% at 90% 80%, #e8a4b440 0%, transparent 60%),
-    radial-gradient(ellipse 50% 30% at 50% 50%, #faeee860 0%, transparent 80%),
-    radial-gradient(ellipse 30% 40% at 80% 10%, #a8c4d430 0%, transparent 60%);
+    radial-gradient(ellipse 80% 60% at 0% 0%,   #ffb3cc 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 100% 0%,  #ff80ab 0%, transparent 50%),
+    radial-gradient(ellipse 50% 60% at 50% 50%,  #ffd6e8 0%, transparent 60%),
+    radial-gradient(ellipse 70% 50% at 0% 100%,  #ffaad4 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 100% 100%,#ff85c2 0%, transparent 50%),
+    radial-gradient(ellipse 40% 30% at 30% 70%,  #ffcce0 0%, transparent 50%),
+    radial-gradient(ellipse 30% 40% at 70% 30%,  #ffc0d8 0%, transparent 45%),
+    linear-gradient(135deg, #ffe0ec 0%, #ffd0e8 30%, #ffb8d8 60%, #ffa0cc 100%);
 }
 
-/* FALLING PETALS */
-.petals-container{ position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+/* watercolour paint splashes */
+.bg-splash{
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(circle 200px at 15% 20%,  #ff69b480 0%, transparent 70%),
+    radial-gradient(circle 150px at 80% 15%,  #ff1493aa 0%, transparent 70%),
+    radial-gradient(circle 180px at 90% 60%,  #ff85a160 0%, transparent 70%),
+    radial-gradient(circle 160px at 10% 75%,  #c0608090 0%, transparent 70%),
+    radial-gradient(circle 200px at 50% 90%,  #ff4d8270 0%, transparent 70%),
+    radial-gradient(circle 120px at 35% 45%,  #ffb34750 0%, transparent 70%),
+    radial-gradient(circle 140px at 65% 75%,  #e040a060 0%, transparent 70%);
+  filter: blur(30px);
+}
+
+/* sakura tree silhouette */
+.bg-tree{
+  position:fixed; bottom:0; left:50%; transform:translateX(-50%);
+  z-index:0; pointer-events:none; opacity:0.12; width:100%; text-align:center;
+}
+.bg-tree svg{ width:100%; max-width:800px; height:auto; }
+
+/* ── FALLING PETALS ── */
+.petals{ position:fixed; inset:0; z-index:1; pointer-events:none; overflow:hidden; }
 .petal{
-  position:absolute; top:-20px;
-  font-size:16px; opacity:0.6;
-  animation: fall linear infinite;
+  position:absolute; top:-30px; pointer-events:none;
+  animation:fall linear infinite;
+  filter:drop-shadow(0 2px 4px rgba(200,80,120,0.3));
 }
 @keyframes fall{
-  0%  { transform:translateY(-20px) rotate(0deg) translateX(0px); opacity:0; }
-  10% { opacity:0.7; }
-  90% { opacity:0.4; }
-  100%{ transform:translateY(110vh) rotate(720deg) translateX(60px); opacity:0; }
+  0%  { transform:translateY(-30px) rotate(0deg) translateX(0px); opacity:0; }
+  8%  { opacity:1; }
+  90% { opacity:0.7; }
+  100%{ transform:translateY(110vh) rotate(900deg) translateX(80px); opacity:0; }
 }
 
-/* INK BRUSH DIVIDERS */
-.brush-line{
-  height:2px; border:none;
-  background:linear-gradient(90deg, transparent, var(--ink-faint) 20%, var(--ink-light) 50%, var(--ink-faint) 80%, transparent);
-  margin:16px 0; opacity:0.5;
-}
-
-.app{ position:relative; z-index:1; max-width:720px; margin:0 auto; padding:20px 16px 80px; }
+/* ── APP ── */
+.app{ position:relative; z-index:2; max-width:720px; margin:0 auto; padding:20px 16px 80px; }
 
 /* HEADER */
 .topbar{
-  text-align:center; margin-bottom:24px; padding-bottom:16px;
-  border-bottom:1px solid var(--ink-faint);
-  position:relative;
+  text-align:center; margin-bottom:20px; padding:20px 16px 16px;
+  background:rgba(255,255,255,0.55);
+  backdrop-filter:blur(12px);
+  border-radius:20px;
+  border:1px solid rgba(255,180,210,0.5);
+  box-shadow:0 4px 24px rgba(220,80,140,0.15);
 }
 .logo-jp{
-  font-family:'Zen Old Mincho',serif; font-size:28px; font-weight:700;
-  color:var(--ink); letter-spacing:4px; line-height:1;
-  text-shadow: 1px 1px 0 var(--sakura2);
+  font-family:'Zen Old Mincho',serif; font-size:32px; font-weight:700;
+  background:linear-gradient(135deg,var(--deep) 0%,var(--pk2) 40%,var(--magenta) 70%,var(--coral) 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  letter-spacing:6px; line-height:1.2;
 }
-.logo-en{
-  font-size:11px; letter-spacing:5px; color:var(--ink-light);
-  margin-top:4px; font-family:'Sawarabi Mincho',serif;
-}
-.petal-deco{ color:var(--sakura3); font-size:14px; margin:0 8px; opacity:0.7; }
+.logo-en{ font-size:10px; letter-spacing:5px; color:var(--purple); margin-top:4px; opacity:0.8; }
+.petal-deco{ font-size:18px; margin:0 6px; }
 
-/* STREAK BANNER */
+/* STREAK */
 .streak-bar{
-  display:flex; align-items:center; justify-content:center; gap:20px;
-  background:var(--paper2); border:1px solid var(--sakura1);
-  border-radius:40px; padding:8px 24px; margin-bottom:20px;
-  font-size:12px; color:var(--ink-mid);
+  display:flex; align-items:center; justify-content:center; gap:0;
+  background:rgba(255,255,255,0.6); backdrop-filter:blur(10px);
+  border:1px solid rgba(255,150,190,0.4);
+  border-radius:50px; padding:10px 20px; margin-bottom:16px;
+  box-shadow:0 2px 16px rgba(220,80,140,0.12);
 }
-.streak-num{ font-family:'Zen Old Mincho',serif; font-size:22px; color:var(--sakura4); font-weight:700; line-height:1; }
-.streak-label{ font-size:10px; color:var(--ink-light); margin-top:2px; }
-.streak-col{ text-align:center; }
-.streak-divider{ width:1px; height:30px; background:var(--ink-faint); }
+.streak-col{ text-align:center; padding:0 18px; }
+.streak-num{ font-family:'Zen Old Mincho',serif; font-size:24px; line-height:1; }
+.streak-num.fire{ color:var(--coral); }
+.streak-num.known{ color:#2e7d4f; }
+.streak-num.total{ color:var(--purple); }
+.streak-label{ font-size:9px; color:var(--ink-light); margin-top:2px; letter-spacing:1px; }
+.streak-div{ width:1px; height:36px; background:rgba(220,120,170,0.3); }
 
-/* WORD OF DAY */
+/* WORD OF THE DAY */
 .wotd{
-  background:linear-gradient(135deg, var(--paper2) 0%, var(--sakura1)30 100%);
-  border:1px solid var(--sakura2); border-radius:12px;
-  padding:16px 18px; margin-bottom:20px; position:relative; overflow:hidden;
+  position:relative; overflow:hidden;
+  background:rgba(255,255,255,0.65); backdrop-filter:blur(12px);
+  border:1px solid rgba(255,130,180,0.4);
+  border-radius:16px; padding:18px 20px; margin-bottom:16px;
+  box-shadow:0 4px 20px rgba(220,80,140,0.15);
 }
 .wotd::before{
-  content:'今日の一言'; position:absolute; top:8px; right:12px;
-  font-size:9px; letter-spacing:2px; color:var(--sakura4); opacity:0.6;
-  font-family:'Zen Old Mincho',serif;
+  content:''; position:absolute; top:-30px; right:-30px;
+  width:140px; height:140px; border-radius:50%;
+  background:radial-gradient(circle,#ff80ab40,transparent 70%);
 }
-.wotd-label{ font-size:10px; letter-spacing:3px; color:var(--sakura4); margin-bottom:8px; }
-.wotd-kanji{ font-family:'Zen Old Mincho',serif; font-size:36px; font-weight:700; color:var(--ink); line-height:1; margin-bottom:4px; }
-.wotd-reading{ font-size:13px; color:var(--ink-light); margin-bottom:4px; letter-spacing:2px; }
-.wotd-meaning{ font-size:14px; color:var(--ink-mid); font-weight:400; }
-.wotd-sentence{ font-size:11px; color:var(--ink-light); margin-top:6px; line-height:1.7; border-top:1px solid var(--sakura1); padding-top:6px; }
-
-/* MODE TABS */
-.mode-tabs{ display:flex; gap:6px; margin-bottom:16px; background:var(--paper2); border-radius:40px; padding:4px; }
-.mode-tab{
-  flex:1; background:transparent; border:none; padding:8px 4px;
-  font-family:'Sawarabi Mincho',serif; font-size:11px; letter-spacing:1px;
-  color:var(--ink-light); cursor:pointer; border-radius:36px; transition:all 0.2s;
+.wotd::after{
+  content:''; position:absolute; bottom:-20px; left:-20px;
+  width:100px; height:100px; border-radius:50%;
+  background:radial-gradient(circle,#ffb34740,transparent 70%);
 }
-.mode-tab.active{ background:var(--paper); color:var(--ink); box-shadow:0 1px 4px rgba(44,24,16,0.1); }
+.wotd-badge{
+  display:inline-block; font-size:9px; letter-spacing:3px;
+  background:linear-gradient(135deg,var(--pk2),var(--magenta));
+  color:#fff; padding:3px 12px; border-radius:20px; margin-bottom:10px;
+}
+.wotd-kanji{
+  font-family:'Zen Old Mincho',serif; font-size:40px; font-weight:700;
+  background:linear-gradient(135deg,var(--deep),var(--pk2));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  line-height:1.1; margin-bottom:4px;
+}
+.wotd-reading{ font-size:13px; color:var(--purple); margin-bottom:3px; letter-spacing:2px; }
+.wotd-meaning{ font-size:15px; color:var(--ink-mid); font-weight:400; margin-bottom:8px; }
+.wotd-sentence{
+  font-size:11px; color:var(--ink-light); line-height:1.8;
+  border-top:1px solid rgba(220,120,170,0.25); padding-top:8px; font-style:italic;
+}
 
 /* FILTERS */
-.filters{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:16px; align-items:center; }
-.filter-label{ font-size:10px; letter-spacing:2px; color:var(--ink-faint); margin-right:4px; }
-.cat-btn{
-  background:transparent; border:1px solid var(--ink-faint);
-  color:var(--ink-light); padding:4px 12px;
-  font-family:'Sawarabi Mincho',serif; font-size:11px;
-  cursor:pointer; transition:all 0.15s; border-radius:20px;
+.filter-wrap{
+  background:rgba(255,255,255,0.55); backdrop-filter:blur(10px);
+  border:1px solid rgba(255,150,190,0.3); border-radius:14px;
+  padding:12px 14px; margin-bottom:14px;
 }
-.cat-btn:hover{ border-color:var(--sakura3); color:var(--sakura4); }
-.cat-btn.active{ background:var(--sakura1); border-color:var(--sakura3); color:var(--ink); }
+.filter-row{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+.filter-label{ font-size:9px; letter-spacing:2px; color:var(--ink-faint); margin-right:4px; }
+.cat-btn{
+  background:rgba(255,255,255,0.6); border:1px solid rgba(220,120,170,0.35);
+  color:var(--purple); padding:5px 14px;
+  font-family:'Sawarabi Mincho',serif; font-size:11px;
+  cursor:pointer; transition:all 0.2s; border-radius:20px;
+}
+.cat-btn:hover{ border-color:var(--pk2); color:var(--pk2); background:rgba(255,255,255,0.8); }
+.cat-btn.active{
+  background:linear-gradient(135deg,var(--pk2),var(--magenta));
+  border-color:transparent; color:#fff;
+  box-shadow:0 2px 12px rgba(220,80,140,0.35);
+}
 .controls{ display:flex; gap:6px; margin-left:auto; }
 .ctrl-btn{
-  background:transparent; border:1px solid var(--ink-faint);
-  color:var(--ink-light); padding:4px 12px;
+  background:rgba(255,255,255,0.6); border:1px solid rgba(220,120,170,0.35);
+  color:var(--purple); padding:5px 12px;
   font-family:'Sawarabi Mincho',serif; font-size:11px;
-  cursor:pointer; transition:all 0.15s; border-radius:20px;
+  cursor:pointer; transition:all 0.2s; border-radius:20px;
 }
-.ctrl-btn:hover{ border-color:var(--sakura3); color:var(--sakura4); }
-.ctrl-btn.on{ background:var(--sakura1); border-color:var(--sakura3); color:var(--ink); }
+.ctrl-btn:hover{ border-color:var(--pk2); color:var(--pk2); }
+.ctrl-btn.on{
+  background:linear-gradient(135deg,var(--coral),var(--peach));
+  border-color:transparent; color:#fff;
+}
 
 /* PROGRESS */
-.cat-progress{ margin-bottom:20px; display:flex; flex-direction:column; gap:6px; }
-.prog-row{ display:flex; align-items:center; gap:10px; }
-.prog-name{ width:90px; font-size:9px; letter-spacing:1px; color:var(--ink-light); flex-shrink:0; }
-.prog-track{ flex:1; height:4px; background:var(--paper3); border-radius:4px; overflow:hidden; }
-.prog-fill{ height:100%; border-radius:4px; background:linear-gradient(90deg,var(--sakura2),var(--sakura4)); transition:width 0.5s ease; }
-.prog-count{ width:32px; text-align:right; font-size:9px; color:var(--ink-light); }
+.prog-wrap{
+  background:rgba(255,255,255,0.5); backdrop-filter:blur(8px);
+  border:1px solid rgba(255,150,190,0.25); border-radius:12px;
+  padding:10px 14px; margin-bottom:14px;
+}
+.prog-row{ display:flex; align-items:center; gap:8px; margin-bottom:5px; }
+.prog-row:last-child{ margin-bottom:0; }
+.prog-name{ width:80px; font-size:9px; letter-spacing:1px; color:var(--ink-light); flex-shrink:0; }
+.prog-track{ flex:1; height:6px; background:rgba(220,120,170,0.15); border-radius:6px; overflow:hidden; }
+.prog-fill{
+  height:100%; border-radius:6px;
+  background:linear-gradient(90deg,var(--pk1),var(--magenta),var(--coral));
+  box-shadow:0 0 6px rgba(220,80,140,0.4);
+  transition:width 0.6s cubic-bezier(0.34,1.56,0.64,1);
+}
+.prog-count{ width:30px; text-align:right; font-size:9px; color:var(--ink-light); }
 
 /* COUNTER */
-.counter{ text-align:center; font-size:11px; letter-spacing:3px; color:var(--ink-faint); margin-bottom:16px; }
-.counter span{ color:var(--sakura4); font-family:'Zen Old Mincho',serif; font-size:14px; }
+.counter{ text-align:center; font-size:11px; letter-spacing:3px; color:rgba(180,100,140,0.6); margin-bottom:14px; }
+.counter span{ font-family:'Zen Old Mincho',serif; font-size:16px; color:var(--pk2); }
 
-/* ── FLASHCARD ── */
-.card-area{ perspective:1200px; margin-bottom:16px; cursor:pointer; }
-.card-3d{ position:relative; width:100%; transform-style:preserve-3d; transition:transform 0.6s cubic-bezier(0.23,1,0.32,1); }
+/* ── CARD ── */
+.card-area{ perspective:1400px; margin-bottom:14px; cursor:pointer; }
+.card-3d{
+  position:relative; width:100%;
+  transform-style:preserve-3d;
+  transition:transform 0.65s cubic-bezier(0.23,1,0.32,1);
+}
 .card-3d.flipped{ transform:rotateY(180deg); }
 .card-face{
   backface-visibility:hidden; -webkit-backface-visibility:hidden;
-  background:var(--paper);
-  border:1px solid var(--sakura1);
-  border-radius:12px; padding:36px 28px;
-  min-height:260px; display:flex; flex-direction:column;
+  background:rgba(255,255,255,0.72);
+  backdrop-filter:blur(16px);
+  border:1px solid rgba(255,150,190,0.5);
+  border-radius:20px; padding:36px 28px;
+  min-height:270px; display:flex; flex-direction:column;
   align-items:center; justify-content:center;
   position:relative; overflow:hidden;
-  box-shadow:0 2px 16px rgba(212,120,154,0.1), inset 0 0 40px rgba(242,196,206,0.15);
+  box-shadow:0 8px 32px rgba(220,80,140,0.18), 0 2px 8px rgba(220,80,140,0.1);
   transition:border-color 0.2s, box-shadow 0.2s;
 }
-/* watercolour corner blobs */
+/* colourful corner blobs */
 .card-face::before{
-  content:''; position:absolute; top:-20px; right:-20px;
-  width:120px; height:120px; border-radius:50%;
-  background:radial-gradient(circle, var(--sakura1) 0%, transparent 70%);
-  opacity:0.4; pointer-events:none;
+  content:''; position:absolute; top:-40px; right:-40px;
+  width:160px; height:160px; border-radius:50%;
+  background:radial-gradient(circle,#ff80ab50,#ffb34730 50%,transparent 70%);
+  pointer-events:none;
 }
 .card-face::after{
-  content:''; position:absolute; bottom:-20px; left:-20px;
-  width:100px; height:100px; border-radius:50%;
-  background:radial-gradient(circle, var(--sakura1) 0%, transparent 70%);
-  opacity:0.3; pointer-events:none;
+  content:''; position:absolute; bottom:-40px; left:-40px;
+  width:140px; height:140px; border-radius:50%;
+  background:radial-gradient(circle,#c0609050,#ff4d8230 50%,transparent 70%);
+  pointer-events:none;
 }
 .card-back{ position:absolute; top:0; left:0; width:100%; transform:rotateY(180deg); }
 
-.card-cat-tag{ position:absolute; top:12px; left:14px; font-size:9px; letter-spacing:2px; color:var(--sakura4); opacity:0.7; }
-.card-known-badge{
-  position:absolute; top:12px; right:14px; font-size:9px;
-  padding:2px 8px; border:1px solid var(--moss); color:var(--moss);
-  border-radius:20px; background:#7a9e7e15; display:none;
+/* card top accent bar */
+.card-bar{
+  position:absolute; top:0; left:0; right:0; height:4px; border-radius:20px 20px 0 0;
+  background:linear-gradient(90deg,var(--pk1),var(--magenta),var(--coral),var(--peach),var(--lavender));
 }
-.card-face.is-known .card-known-badge{ display:block; }
-.card-hint{ position:absolute; bottom:12px; right:14px; font-size:10px; color:var(--ink-faint); letter-spacing:1px; }
+.card-cat{
+  position:absolute; top:14px; left:16px; font-size:9px; letter-spacing:2px;
+  background:linear-gradient(135deg,var(--pk2),var(--magenta));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  opacity:0.8;
+}
+.card-hint{ position:absolute; bottom:12px; right:16px; font-size:10px; color:rgba(180,100,140,0.5); letter-spacing:1px; }
+.known-badge{
+  position:absolute; top:12px; right:14px; font-size:9px;
+  padding:2px 10px; border-radius:20px;
+  background:linear-gradient(135deg,#56ab6e,#2e7d4f);
+  color:#fff; display:none;
+  box-shadow:0 2px 8px rgba(46,125,79,0.3);
+}
+.card-face.is-known .known-badge{ display:block; }
 
 .kanji-main{
-  font-family:'Zen Old Mincho',serif; font-size:68px; font-weight:700;
-  color:var(--ink); line-height:1; margin-bottom:12px; text-align:center;
-  text-shadow:2px 2px 0 var(--sakura1), 1px 1px 8px rgba(212,120,154,0.2);
+  font-family:'Zen Old Mincho',serif; font-size:72px; font-weight:700;
+  background:linear-gradient(135deg,var(--deep) 0%,var(--pk2) 45%,var(--magenta) 80%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  line-height:1; margin-bottom:12px; text-align:center;
 }
 .reading-main{
-  font-family:'Noto Serif JP',serif; font-size:16px; font-weight:300;
-  color:var(--ink-mid); letter-spacing:4px; text-align:center;
+  font-family:'Noto Serif JP',serif; font-size:17px; font-weight:300;
+  color:var(--purple); letter-spacing:4px; text-align:center; margin-bottom:4px;
 }
-.reading-romaji{ font-size:12px; color:var(--ink-light); letter-spacing:2px; margin-top:4px; text-align:center; }
+.reading-romaji{ font-size:12px; color:var(--ink-light); letter-spacing:2px; text-align:center; }
 
-.back-meaning{ font-family:'Zen Old Mincho',serif; font-size:26px; color:var(--ink); margin-bottom:8px; text-align:center; }
-.back-reading{ font-size:13px; color:var(--ink-light); margin-bottom:4px; letter-spacing:2px; text-align:center; }
-.back-divider{ width:60px; height:1px; background:linear-gradient(90deg,transparent,var(--sakura2),transparent); margin:10px auto; }
+/* BACK FACE */
+.back-meaning{
+  font-family:'Zen Old Mincho',serif; font-size:28px;
+  background:linear-gradient(135deg,var(--deep),var(--pk2));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  margin-bottom:6px; text-align:center; line-height:1.3;
+}
+.back-sub{ font-size:13px; color:var(--purple); letter-spacing:2px; text-align:center; margin-bottom:4px; }
+.back-divider{
+  width:80px; height:2px; margin:10px auto;
+  background:linear-gradient(90deg,transparent,var(--pk1),var(--magenta),var(--coral),transparent);
+  border-radius:2px;
+}
 .back-context{ font-size:12px; color:var(--ink-light); text-align:center; line-height:1.8; max-width:380px; margin-bottom:8px; }
 .back-sentence{
   font-size:11px; color:var(--ink-mid); text-align:center; line-height:1.9;
-  background:var(--paper2); border-radius:8px; padding:8px 14px;
-  border-left:2px solid var(--sakura2); max-width:400px;
-  font-style:italic;
+  background:rgba(255,180,210,0.2); border-radius:10px;
+  padding:8px 14px; border-left:3px solid var(--pk1);
+  max-width:400px; font-style:italic;
 }
 
-.flip-hint{ text-align:center; font-size:10px; color:var(--ink-faint); letter-spacing:2px; margin-bottom:8px; }
+/* FLIP HINT */
+.flip-hint{
+  text-align:center; font-size:10px;
+  background:linear-gradient(135deg,var(--pk2),var(--magenta),var(--coral));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  letter-spacing:2px; margin-bottom:10px; opacity:0.7;
+}
 
 /* ACTIONS */
-.actions{ display:flex; gap:8px; justify-content:center; margin-bottom:16px; flex-wrap:wrap; }
+.actions{ display:flex; gap:8px; justify-content:center; margin-bottom:12px; flex-wrap:wrap; }
 .act-btn{
-  background:transparent; border:1px solid var(--ink-faint);
-  padding:9px 16px; font-family:'Sawarabi Mincho',serif;
+  background:rgba(255,255,255,0.65); backdrop-filter:blur(8px);
+  border:1px solid rgba(220,120,170,0.4);
+  padding:10px 18px; font-family:'Sawarabi Mincho',serif;
   font-size:11px; letter-spacing:1px; cursor:pointer;
-  transition:all 0.15s; border-radius:20px; color:var(--ink-mid);
+  transition:all 0.2s; border-radius:25px; color:var(--ink-mid);
+  box-shadow:0 2px 8px rgba(220,80,140,0.1);
 }
-.btn-known{ border-color:var(--moss); color:var(--moss); }
-.btn-known:hover{ background:#7a9e7e15; box-shadow:0 0 10px #7a9e7e30; }
-.btn-learning{ border-color:var(--sakura4); color:var(--sakura4); }
-.btn-learning:hover{ background:var(--sakura1); }
-.btn-speak{ border-color:var(--sky); color:#6a94a4; }
-.btn-speak:hover{ background:#a8c4d420; }
-.btn-nav{ border-color:var(--ink-faint); color:var(--ink-light); }
-.btn-nav:hover{ border-color:var(--sakura3); color:var(--sakura4); }
-@keyframes pulse-speak{ 0%{box-shadow:0 0 0 0 #a8c4d460} 70%{box-shadow:0 0 0 8px transparent} 100%{box-shadow:0 0 0 0 transparent} }
-.btn-speak.speaking{ animation:pulse-speak 0.8s infinite; background:#a8c4d420; }
+.btn-known{ border-color:rgba(46,125,79,0.5); color:#2e7d4f; }
+.btn-known:hover{ background:rgba(46,125,79,0.12); box-shadow:0 4px 14px rgba(46,125,79,0.25); transform:translateY(-1px); }
+.btn-learning{ border-color:rgba(220,80,140,0.5); color:var(--pk2); }
+.btn-learning:hover{ background:rgba(255,100,160,0.1); transform:translateY(-1px); }
+.btn-speak{ border-color:rgba(180,100,200,0.4); color:var(--purple); }
+.btn-speak:hover{ background:rgba(180,100,200,0.1); transform:translateY(-1px); }
+.btn-nav{ border-color:rgba(220,120,170,0.35); color:var(--purple); }
+.btn-nav:hover{ border-color:var(--pk2); color:var(--pk2); transform:translateY(-1px); }
+@keyframes pulse-speak{ 0%{box-shadow:0 0 0 0 rgba(180,100,200,0.5)} 70%{box-shadow:0 0 0 10px transparent} 100%{box-shadow:0 0 0 0 transparent} }
+.btn-speak.speaking{ animation:pulse-speak 0.9s infinite; background:rgba(180,100,200,0.15); }
 
-/* ── WRITING PRACTICE MODE ── */
-.write-area{ display:none; }
-.write-area.active{ display:block; }
-.write-prompt{
-  text-align:center; margin-bottom:16px;
-  font-family:'Zen Old Mincho',serif; font-size:22px; color:var(--ink-mid);
-}
-.write-prompt span{ font-size:32px; color:var(--ink); display:block; margin-bottom:4px; }
-.canvas-wrap{
-  background:var(--paper); border:1px solid var(--sakura2);
-  border-radius:12px; margin-bottom:12px; position:relative;
-  box-shadow:inset 0 0 20px rgba(242,196,206,0.2);
-  overflow:hidden;
-}
-.write-canvas{ display:block; width:100%; touch-action:none; cursor:crosshair; }
-/* guide lines on canvas */
-.canvas-wrap::before{
-  content:''; position:absolute; inset:0; pointer-events:none;
-  background-image:
-    linear-gradient(var(--sakura1)40 1px, transparent 1px),
-    linear-gradient(90deg, var(--sakura1)40 1px, transparent 1px);
-  background-size:60px 60px; opacity:0.4;
-}
-/* centre cross */
-.canvas-wrap::after{
-  content:''; position:absolute; top:50%; left:50%;
-  transform:translate(-50%,-50%);
-  width:1px; height:80%; background:var(--sakura1); opacity:0.5; pointer-events:none;
-}
-.write-controls{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
-.write-btn{
-  background:transparent; border:1px solid var(--ink-faint);
-  padding:7px 16px; border-radius:20px; font-family:'Sawarabi Mincho',serif;
-  font-size:11px; color:var(--ink-mid); cursor:pointer; transition:all 0.15s;
-}
-.write-btn:hover{ border-color:var(--sakura3); color:var(--sakura4); }
-.write-btn.active{ background:var(--sakura1); border-color:var(--sakura3); }
-.brush-size-row{ display:flex; align-items:center; gap:8px; justify-content:center; margin-top:8px; font-size:11px; color:var(--ink-light); }
-.brush-size-row input{ width:80px; }
+/* KB HINT */
+.kb-hint{ text-align:center; font-size:9px; color:rgba(180,100,140,0.45); letter-spacing:2px; }
+.kb-hint span{ border:1px solid rgba(220,120,170,0.3); padding:1px 5px; border-radius:4px; margin:0 2px; }
 
 /* LOADING */
-.loading{ text-align:center; padding:80px 20px; font-size:13px; color:var(--ink-faint); letter-spacing:3px; font-family:'Zen Old Mincho',serif; }
-@keyframes blink{ 0%,100%{opacity:0.3} 50%{opacity:1} }
+.loading{
+  text-align:center; padding:80px 20px;
+  font-family:'Zen Old Mincho',serif; font-size:14px;
+  background:linear-gradient(135deg,var(--pk2),var(--magenta));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  letter-spacing:3px;
+}
+@keyframes blink{0%,100%{opacity:0.3}50%{opacity:1}}
 .loading span{ animation:blink 1.4s infinite; }
-.empty-state{ text-align:center; padding:60px 20px; font-size:12px; color:var(--ink-faint); letter-spacing:2px; }
+.empty-state{ text-align:center; padding:60px 20px; font-size:13px; color:var(--ink-faint); }
 
-@keyframes cardIn{ from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
-.card-area{ animation:cardIn 0.3s ease; }
+/* CARD ENTRANCE */
+@keyframes cardIn{ from{opacity:0;transform:translateY(16px) scale(0.98)} to{opacity:1;transform:translateY(0) scale(1)} }
+.card-area{ animation:cardIn 0.35s cubic-bezier(0.34,1.56,0.64,1); }
 </style>
 </head>
 <body>
 
-<!-- BACKGROUND -->
-<div class="bg-wash"></div>
-<div class="petals-container" id="petals"></div>
+<!-- BACKGROUNDS -->
+<div class="bg-base"></div>
+<div class="bg-splash"></div>
+
+<!-- SAKURA TREE SVG SILHOUETTE -->
+<div class="bg-tree">
+  <svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg" fill="#c0305880">
+    <ellipse cx="400" cy="120" rx="280" ry="130"/>
+    <ellipse cx="220" cy="160" rx="160" ry="100"/>
+    <ellipse cx="580" cy="150" rx="170" ry="110"/>
+    <ellipse cx="320" cy="90"  rx="140" ry="80"/>
+    <ellipse cx="500" cy="80"  rx="130" ry="75"/>
+    <ellipse cx="150" cy="200" rx="120" ry="80"/>
+    <ellipse cx="650" cy="190" rx="130" ry="85"/>
+    <rect x="385" y="240" width="30" height="160" rx="8" fill="#8b4513a0"/>
+    <rect x="300" y="300" width="18" height="100" rx="6" fill="#8b4513a0" transform="rotate(-20,309,300)"/>
+    <rect x="480" y="290" width="18" height="110" rx="6" fill="#8b4513a0" transform="rotate(15,489,290)"/>
+  </svg>
+</div>
+
+<!-- PETALS -->
+<div class="petals" id="petals"></div>
 
 <div class="app">
 
   <!-- HEADER -->
   <div class="topbar">
     <div class="logo-jp"><span class="petal-deco">🌸</span>桜フラッシュ<span class="petal-deco">🌸</span></div>
-    <div class="logo-en">SAKURA FLASH — JAPANESE VOCABULARY</div>
+    <div class="logo-en">SAKURA FLASH · JAPANESE VOCABULARY</div>
   </div>
 
-  <!-- STREAK + STATS -->
+  <!-- STREAK / STATS -->
   <div class="streak-bar">
     <div class="streak-col">
-      <div class="streak-num" id="streak-num">0</div>
-      <div class="streak-label">day streak 🔥</div>
+      <div class="streak-num fire" id="streak-num">0</div>
+      <div class="streak-label">🔥 DAY STREAK</div>
     </div>
-    <div class="streak-divider"></div>
+    <div class="streak-div"></div>
     <div class="streak-col">
-      <div class="streak-num" id="stat-known" style="color:var(--moss)">0</div>
-      <div class="streak-label">known ✓</div>
+      <div class="streak-num known" id="stat-known">0</div>
+      <div class="streak-label">✓ KNOWN</div>
     </div>
-    <div class="streak-divider"></div>
+    <div class="streak-div"></div>
     <div class="streak-col">
-      <div class="streak-num" id="stat-total" style="color:var(--ink-mid)">0</div>
-      <div class="streak-label">total cards</div>
+      <div class="streak-num total" id="stat-total">0</div>
+      <div class="streak-label">🌸 TOTAL</div>
     </div>
   </div>
 
   <!-- WORD OF THE DAY -->
-  <div class="wotd" id="wotd">
-    <div class="wotd-label">✦ WORD OF THE DAY ✦</div>
-    <div class="wotd-kanji" id="wotd-kanji">—</div>
-    <div class="wotd-reading" id="wotd-reading"></div>
-    <div class="wotd-meaning" id="wotd-meaning"></div>
+  <div class="wotd">
+    <div class="wotd-badge">✦ WORD OF THE DAY · 今日の一言 ✦</div>
+    <div class="wotd-kanji"  id="wotd-kanji">—</div>
+    <div class="wotd-reading"  id="wotd-reading"></div>
+    <div class="wotd-meaning"  id="wotd-meaning"></div>
     <div class="wotd-sentence" id="wotd-sentence"></div>
   </div>
 
-  <hr class="brush-line">
-
-  <!-- MODE TABS -->
-  <div class="mode-tabs">
-    <button class="mode-tab active" data-mode="flashcard">🌸 Flashcards</button>
-    <button class="mode-tab" data-mode="writing">✍ Writing</button>
-  </div>
-
   <!-- FILTERS -->
-  <div class="filters" id="filters">
-    <span class="filter-label">Category</span>
-    <button class="cat-btn active" data-cat="ALL">All</button>
-    <div class="controls">
-      <button class="ctrl-btn" id="btn-shuffle">⇄ Shuffle</button>
-      <button class="ctrl-btn" id="btn-hide-known">Hide Known</button>
+  <div class="filter-wrap">
+    <div class="filter-row" id="filters">
+      <span class="filter-label">Category</span>
+      <button class="cat-btn active" data-cat="ALL">All 🌸</button>
+      <div class="controls">
+        <button class="ctrl-btn" id="btn-shuffle">⇄ Shuffle</button>
+        <button class="ctrl-btn" id="btn-hide-known">Hide Known</button>
+      </div>
     </div>
   </div>
 
-  <!-- PROGRESS BARS -->
-  <div class="cat-progress" id="cat-progress"></div>
+  <!-- PROGRESS -->
+  <div class="prog-wrap">
+    <div id="cat-progress"></div>
+  </div>
 
   <!-- COUNTER -->
   <div class="counter" id="counter"></div>
 
-  <!-- ── FLASHCARD MODE ── -->
-  <div id="flashcard-mode">
-    <div class="card-area" id="card-area">
-      <div class="loading"><span>読み込み中…</span></div>
-    </div>
-    <div class="flip-hint" id="flip-hint">── tap card to reveal meaning ──</div>
-    <div class="actions">
-      <button class="act-btn btn-nav"      onclick="navigate(-1)">◀ Prev</button>
-      <button class="act-btn btn-speak"    id="btn-speak" onclick="speakCard()">♪ Listen</button>
-      <button class="act-btn btn-known"    onclick="markKnown()">✓ Known</button>
-      <button class="act-btn btn-learning" onclick="markLearning()">✕ Learning</button>
-      <button class="act-btn btn-nav"      onclick="navigate(1)">Next ▶</button>
-    </div>
+  <!-- CARD -->
+  <div class="card-area" id="card-area">
+    <div class="loading"><span>桜を読み込み中…</span></div>
   </div>
 
-  <!-- ── WRITING PRACTICE MODE ── -->
-  <div id="writing-mode" style="display:none;">
-    <div class="write-prompt">
-      Trace this character:<br>
-      <span id="write-kanji">—</span>
-      <div style="font-size:13px;color:var(--ink-light);margin-top:4px;" id="write-reading"></div>
-    </div>
-    <div class="canvas-wrap">
-      <canvas class="write-canvas" id="write-canvas" height="240"></canvas>
-    </div>
-    <div class="brush-size-row">
-      Brush size
-      <input type="range" id="brush-size" min="4" max="24" value="10">
-    </div>
-    <div class="write-controls" style="margin-top:10px;">
-      <button class="write-btn" onclick="clearCanvas()">🗑 Clear</button>
-      <button class="write-btn" onclick="showAnswer()">👁 Show Answer</button>
-      <button class="write-btn" onclick="writeNext(-1)">◀ Prev</button>
-      <button class="write-btn" onclick="writeNext(1)">Next ▶</button>
-      <button class="write-btn" onclick="speakWrite()">♪ Listen</button>
-    </div>
-    <div id="write-answer" style="display:none;margin-top:14px;" class="wotd">
-      <div class="wotd-meaning" id="write-meaning"></div>
-      <div class="wotd-sentence" id="write-sentence"></div>
-    </div>
+  <div class="flip-hint" id="flip-hint">✿ tap card to reveal meaning ✿</div>
+
+  <!-- ACTIONS -->
+  <div class="actions">
+    <button class="act-btn btn-nav"      onclick="navigate(-1)">◀ Prev</button>
+    <button class="act-btn btn-speak"    id="btn-speak" onclick="speakCard()">♪ Listen</button>
+    <button class="act-btn btn-known"    onclick="markKnown()">✓ Known</button>
+    <button class="act-btn btn-learning" onclick="markLearning()">✕ Learning</button>
+    <button class="act-btn btn-nav"      onclick="navigate(1)">Next ▶</button>
+  </div>
+
+  <div class="kb-hint">
+    <span>←→</span> navigate &nbsp;
+    <span>Space</span> flip &nbsp;
+    <span>K</span> known &nbsp;
+    <span>X</span> learning &nbsp;
+    <span>S</span> speak
   </div>
 
 </div>
@@ -392,41 +448,49 @@ body{
 <script>
 /* ── SERVICE WORKER ── */
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>{ navigator.serviceWorker.register('sakura-sw.js').catch(()=>{}); });
+  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 }
 
-/* ── PETAL ANIMATION ── */
-const petalSymbols=['🌸','🌺','🌷','✿','❀'];
+/* ── PETALS ── */
+const PETALS_SVG=[
+  `<svg width="18" height="16" viewBox="0 0 18 16"><ellipse cx="9" cy="8" rx="8" ry="5" fill="#ff85a1" opacity="0.85" transform="rotate(-20 9 8)"/></svg>`,
+  `<svg width="16" height="18" viewBox="0 0 16 18"><ellipse cx="8" cy="9" rx="5" ry="8" fill="#ff4d82" opacity="0.8" transform="rotate(15 8 9)"/></svg>`,
+  `<svg width="20" height="14" viewBox="0 0 20 14"><ellipse cx="10" cy="7" rx="9" ry="5" fill="#e040a0" opacity="0.75" transform="rotate(-35 10 7)"/></svg>`,
+  `<svg width="14" height="18" viewBox="0 0 14 18"><ellipse cx="7" cy="9" rx="5" ry="8" fill="#c06090" opacity="0.8" transform="rotate(25 7 9)"/></svg>`,
+  `<svg width="22" height="16" viewBox="0 0 22 16"><ellipse cx="11" cy="8" rx="10" ry="5" fill="#ffb3cc" opacity="0.9" transform="rotate(10 11 8)"/></svg>`,
+  `<svg width="16" height="20" viewBox="0 0 16 20"><ellipse cx="8" cy="10" rx="5" ry="9" fill="#ff2d78" opacity="0.7" transform="rotate(-15 8 10)"/></svg>`,
+  `<svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 2 C14 6 18 8 18 12 C18 16 14 18 12 22 C10 18 6 16 6 12 C6 8 10 6 12 2Z" fill="#ffaad4" opacity="0.8"/></svg>`,
+  `<svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="none" stroke="#ff69b4" stroke-width="1.5" opacity="0.6"/><circle cx="10" cy="10" r="3" fill="#ff69b4" opacity="0.7"/></svg>`,
+];
 function spawnPetal(){
   const el=document.createElement('div');
   el.className='petal';
-  el.textContent=petalSymbols[Math.floor(Math.random()*petalSymbols.length)];
+  el.innerHTML=PETALS_SVG[Math.floor(Math.random()*PETALS_SVG.length)];
   el.style.left=Math.random()*100+'vw';
-  el.style.fontSize=(10+Math.random()*12)+'px';
-  el.style.opacity=(0.3+Math.random()*0.5).toString();
-  const dur=6+Math.random()*10;
+  el.style.opacity=(0.5+Math.random()*0.5).toString();
+  const dur=7+Math.random()*12;
   el.style.animationDuration=dur+'s';
   el.style.animationDelay=(Math.random()*dur)+'s';
+  const scale=0.6+Math.random()*0.9;
+  el.style.transform=`scale(${scale})`;
   document.getElementById('petals').appendChild(el);
-  setTimeout(()=>el.remove(), (dur+2)*1000);
+  setTimeout(()=>el.remove(),(dur+3)*1000);
 }
-for(let i=0;i<12;i++) setTimeout(()=>spawnPetal(), i*800);
-setInterval(spawnPetal,3000);
+for(let i=0;i<16;i++) setTimeout(()=>spawnPetal(),i*500);
+setInterval(spawnPetal,1800);
 
 /* ── STREAK ── */
 function getTodayStr(){ return new Date().toISOString().slice(0,10); }
 function loadStreak(){
   const today=getTodayStr();
-  let data=JSON.parse(localStorage.getItem('sakura-streak')||'{"streak":0,"last":""}');
-  const last=data.last;
-  if(last===today){ return data.streak; }
+  let d=JSON.parse(localStorage.getItem('sakura-streak')||'{"streak":0,"last":""}');
   const yesterday=new Date(); yesterday.setDate(yesterday.getDate()-1);
   const yStr=yesterday.toISOString().slice(0,10);
-  if(last===yStr){ data.streak+=1; }
-  else if(last!==today){ data.streak=1; }
-  data.last=today;
-  localStorage.setItem('sakura-streak',JSON.stringify(data));
-  return data.streak;
+  if(d.last===today) return d.streak;
+  d.streak = d.last===yStr ? d.streak+1 : 1;
+  d.last=today;
+  localStorage.setItem('sakura-streak',JSON.stringify(d));
+  return d.streak;
 }
 document.getElementById('streak-num').textContent=loadStreak();
 
@@ -436,11 +500,10 @@ let isFlipped=false, hideKnown=false;
 let knownSet=new Set(), learningSet=new Set();
 function getKey(c){ return c.cat+'|'+c.kanji; }
 
-/* ── WORD OF THE DAY ── */
-function setWordOfDay(cards){
+/* ── WORD OF DAY ── */
+function setWOTD(cards){
   if(!cards.length) return;
-  const dayIdx=Math.floor(Date.now()/86400000)%cards.length;
-  const w=cards[dayIdx];
+  const w=cards[Math.floor(Date.now()/86400000)%cards.length];
   document.getElementById('wotd-kanji').textContent=w.kanji;
   document.getElementById('wotd-reading').textContent=w.reading;
   document.getElementById('wotd-meaning').textContent=w.meaning;
@@ -453,22 +516,21 @@ async function loadWords(){
     const res=await fetch('sakura-words.json?v='+Date.now());
     if(!res.ok) throw new Error();
     ALL_CARDS=await res.json();
-    setWordOfDay(ALL_CARDS);
-    buildCategoryButtons();
+    setWOTD(ALL_CARDS);
     document.getElementById('stat-total').textContent=ALL_CARDS.length;
+    buildCatBtns();
     render();
-    setWriteCard();
   }catch(e){
-    document.getElementById('card-area').innerHTML='<div class="empty-state">Could not load sakura-words.json</div>';
+    document.getElementById('card-area').innerHTML='<div class="empty-state">🌸 Could not load sakura-words.json</div>';
   }
 }
 
 /* ── CATEGORY BUTTONS ── */
-function buildCategoryButtons(){
+function buildCatBtns(){
   const cats=[...new Set(ALL_CARDS.map(c=>c.cat))];
-  const filtersEl=document.getElementById('filters');
-  const controls=document.querySelector('.controls');
-  filtersEl.querySelectorAll('.cat-btn:not([data-cat="ALL"])').forEach(b=>b.remove());
+  const el=document.getElementById('filters');
+  const ctrl=document.querySelector('.controls');
+  el.querySelectorAll('.cat-btn:not([data-cat="ALL"])').forEach(b=>b.remove());
   cats.forEach(cat=>{
     const btn=document.createElement('button');
     btn.className='cat-btn'; btn.dataset.cat=cat; btn.textContent=cat;
@@ -476,7 +538,7 @@ function buildCategoryButtons(){
       document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active'); currentCat=cat; currentIdx=0; render();
     });
-    filtersEl.insertBefore(btn,controls);
+    el.insertBefore(btn,ctrl);
   });
   document.querySelector('.cat-btn[data-cat="ALL"]').addEventListener('click',function(){
     document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
@@ -508,24 +570,26 @@ function buildProgress(){
 }
 
 /* ── CARD HTML ── */
-function buildCardHTML(){
+function cardHTML(){
   return `<div class="card-3d" id="card-3d">
     <div class="card-face" id="card-front">
-      <div class="card-cat-tag" id="front-cat"></div>
-      <div class="card-known-badge">✓ Known</div>
+      <div class="card-bar"></div>
+      <div class="card-cat" id="front-cat"></div>
+      <div class="known-badge">✓ Known</div>
       <div class="kanji-main" id="front-kanji"></div>
       <div class="reading-main" id="front-reading"></div>
       <div class="reading-romaji" id="front-romaji"></div>
-      <div class="card-hint">tap to reveal</div>
+      <div class="card-hint">tap to reveal ✿</div>
     </div>
     <div class="card-face card-back" id="card-back">
-      <div class="card-cat-tag" id="back-cat"></div>
-      <div class="back-reading" id="back-reading"></div>
+      <div class="card-bar"></div>
+      <div class="card-cat" id="back-cat"></div>
+      <div class="back-sub" id="back-sub"></div>
       <div class="back-meaning" id="back-meaning"></div>
       <div class="back-divider"></div>
       <div class="back-context" id="back-context"></div>
       <div class="back-sentence" id="back-sentence"></div>
-      <div class="card-hint">tap to flip back</div>
+      <div class="card-hint">tap to flip back ✿</div>
     </div>
   </div>`;
 }
@@ -536,20 +600,26 @@ function render(){
   document.getElementById('stat-known').textContent=knownSet.size;
   document.getElementById('stat-total').textContent=ALL_CARDS.length;
   const area=document.getElementById('card-area');
-  if(!deck.length){ area.innerHTML='<div class="empty-state">No cards in this filter 🌸</div>'; document.getElementById('counter').innerHTML=''; buildProgress(); return; }
-  if(!area.querySelector('.card-3d')){ area.innerHTML=buildCardHTML(); area.onclick=flipCard; }
+  if(!deck.length){
+    area.innerHTML='<div class="empty-state">No cards 🌸 try a different filter</div>';
+    document.getElementById('counter').innerHTML='';
+    buildProgress(); return;
+  }
+  if(!area.querySelector('.card-3d')){
+    area.innerHTML=cardHTML(); area.onclick=flipCard;
+  }
   const card=deck[currentIdx];
   const known=knownSet.has(getKey(card));
   isFlipped=false;
   document.getElementById('card-3d').classList.remove('flipped');
-  document.getElementById('flip-hint').textContent='── tap card to reveal meaning ──';
+  document.getElementById('flip-hint').textContent='✿ tap card to reveal meaning ✿';
   document.getElementById('front-cat').textContent=card.cat;
   document.getElementById('front-kanji').textContent=card.kanji;
   document.getElementById('front-reading').textContent=card.reading.split(' ')[0]||card.reading;
   document.getElementById('front-romaji').textContent=card.reading;
   document.getElementById('card-front').className='card-face'+(known?' is-known':'');
   document.getElementById('back-cat').textContent=card.cat;
-  document.getElementById('back-reading').textContent=card.kanji+' ('+card.reading+')';
+  document.getElementById('back-sub').textContent=card.kanji+' · '+card.reading;
   document.getElementById('back-meaning').textContent=card.meaning;
   document.getElementById('back-context').textContent=card.context;
   document.getElementById('back-sentence').textContent=card.sentence||'';
@@ -561,29 +631,30 @@ function flipCard(){
   if(!deck.length||!document.getElementById('card-3d')) return;
   isFlipped=!isFlipped;
   document.getElementById('card-3d').classList.toggle('flipped',isFlipped);
-  document.getElementById('flip-hint').textContent=isFlipped?'── tap to flip back ──':'── tap card to reveal meaning ──';
+  document.getElementById('flip-hint').textContent=isFlipped?'✿ tap to flip back ✿':'✿ tap card to reveal meaning ✿';
 }
 function navigate(dir){
   if(!deck.length) return;
   currentIdx=(currentIdx+dir+deck.length)%deck.length; render();
 }
-function flashBorder(col){
+function flashCard(col,shadow){
   const f=document.getElementById('card-front'); if(!f) return;
-  f.style.borderColor=col; f.style.boxShadow=`0 0 20px ${col}50`;
-  setTimeout(()=>{ f.style.borderColor=''; f.style.boxShadow=''; },400);
+  f.style.borderColor=col; f.style.boxShadow=`0 0 30px ${shadow}`;
+  setTimeout(()=>{ f.style.borderColor=''; f.style.boxShadow=''; },450);
 }
 function markKnown(){
   if(!deck.length) return;
   knownSet.add(getKey(deck[currentIdx]));
   learningSet.delete(getKey(deck[currentIdx]));
-  flashBorder('#7a9e7e');
-  setTimeout(()=>navigate(1),320);
+  flashCard('#56ab6e','rgba(46,125,79,0.4)');
+  setTimeout(()=>navigate(1),340);
 }
 function markLearning(){
   if(!deck.length) return;
   learningSet.add(getKey(deck[currentIdx]));
   knownSet.delete(getKey(deck[currentIdx]));
-  flashBorder('#e8a4b4'); render();
+  flashCard('#ff4d82','rgba(220,80,140,0.4)');
+  render();
 }
 function speakCard(){
   if(!deck.length) return;
@@ -591,7 +662,7 @@ function speakCard(){
   const btn=document.getElementById('btn-speak');
   if(!('speechSynthesis' in window)){ btn.textContent='No TTS'; return; }
   window.speechSynthesis.cancel();
-  const utt=new SpeechSynthesisUtterance(card.kanji+'。'+card.reading.split(' ')[0]);
+  const utt=new SpeechSynthesisUtterance(card.kanji+'。'+(card.reading.split(' ')[0]||card.reading));
   utt.lang='ja-JP'; utt.rate=0.8;
   btn.classList.add('speaking'); btn.textContent='♪ Playing';
   utt.onend=utt.onerror=()=>{ btn.classList.remove('speaking'); btn.textContent='♪ Listen'; };
@@ -599,120 +670,27 @@ function speakCard(){
 }
 
 document.getElementById('btn-shuffle').addEventListener('click',function(){
-  for(let i=ALL_CARDS.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [ALL_CARDS[i],ALL_CARDS[j]]=[ALL_CARDS[j],ALL_CARDS[i]]; }
+  for(let i=ALL_CARDS.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1)); [ALL_CARDS[i],ALL_CARDS[j]]=[ALL_CARDS[j],ALL_CARDS[i]];
+  }
   currentIdx=0; render();
-  this.style.color=getComputedStyle(document.documentElement).getPropertyValue('--sakura4');
-  setTimeout(()=>{ this.style.color=''; },500);
+  this.style.background='linear-gradient(135deg,#ff4d82,#e040a0)';
+  this.style.color='#fff'; this.style.borderColor='transparent';
+  setTimeout(()=>{ this.style.background=''; this.style.color=''; this.style.borderColor=''; },600);
 });
 document.getElementById('btn-hide-known').addEventListener('click',function(){
   hideKnown=!hideKnown; this.classList.toggle('on',hideKnown);
   this.textContent=hideKnown?'Show All':'Hide Known';
   currentIdx=0; render();
 });
-
-/* ── MODE TABS ── */
-document.querySelectorAll('.mode-tab').forEach(tab=>{
-  tab.addEventListener('click',()=>{
-    document.querySelectorAll('.mode-tab').forEach(t=>t.classList.remove('active'));
-    tab.classList.add('active');
-    const mode=tab.dataset.mode;
-    document.getElementById('flashcard-mode').style.display=mode==='flashcard'?'block':'none';
-    document.getElementById('writing-mode').style.display=mode==='writing'?'block':'none';
-    if(mode==='writing') setWriteCard();
-  });
-});
-
-/* ── WRITING PRACTICE ── */
-let writeIdx=0, isDrawing=false, lastX=0, lastY=0;
-let ctx=null, brushColor='#2c1810', brushSize=10;
-
-function initCanvas(){
-  const canvas=document.getElementById('write-canvas');
-  const wrap=canvas.parentElement;
-  canvas.width=wrap.clientWidth||300;
-  canvas.height=240;
-  ctx=canvas.getContext('2d');
-  ctx.lineCap='round'; ctx.lineJoin='round';
-  ctx.strokeStyle=brushColor; ctx.lineWidth=brushSize;
-  clearCanvas();
-
-  canvas.addEventListener('mousedown',e=>{ isDrawing=true; [lastX,lastY]=getPos(e,canvas); });
-  canvas.addEventListener('mousemove',e=>{ if(!isDrawing) return; draw(e,canvas); });
-  canvas.addEventListener('mouseup',()=>isDrawing=false);
-  canvas.addEventListener('mouseleave',()=>isDrawing=false);
-  canvas.addEventListener('touchstart',e=>{ e.preventDefault(); isDrawing=true; [lastX,lastY]=getPos(e.touches[0],canvas); },{passive:false});
-  canvas.addEventListener('touchmove',e=>{ e.preventDefault(); if(!isDrawing) return; draw(e.touches[0],canvas); },{passive:false});
-  canvas.addEventListener('touchend',()=>isDrawing=false);
-
-  document.getElementById('brush-size').addEventListener('input',function(){ brushSize=+this.value; if(ctx) ctx.lineWidth=brushSize; });
-}
-
-function getPos(e,canvas){
-  const r=canvas.getBoundingClientRect();
-  return [e.clientX-r.left, e.clientY-r.top];
-}
-function draw(e,canvas){
-  const [x,y]=getPos(e,canvas);
-  ctx.beginPath(); ctx.moveTo(lastX,lastY); ctx.lineTo(x,y); ctx.stroke();
-  [lastX,lastY]=[x,y];
-}
-function clearCanvas(){
-  if(!ctx) return;
-  ctx.fillStyle='#fdf6f0'; ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);
-  // Draw guide cross
-  ctx.save(); ctx.strokeStyle='#f2c4ce'; ctx.lineWidth=1; ctx.setLineDash([4,4]);
-  ctx.beginPath(); ctx.moveTo(ctx.canvas.width/2,20); ctx.lineTo(ctx.canvas.width/2,ctx.canvas.height-20); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(20,ctx.canvas.height/2); ctx.lineTo(ctx.canvas.width-20,ctx.canvas.height/2); ctx.stroke();
-  ctx.restore(); ctx.strokeStyle=brushColor; ctx.lineWidth=brushSize; ctx.setLineDash([]);
-}
-function setWriteCard(){
-  if(!ctx) initCanvas();
-  buildDeck();
-  if(!deck.length) return;
-  if(writeIdx>=deck.length) writeIdx=0;
-  const card=deck[writeIdx];
-  document.getElementById('write-kanji').textContent=card.kanji;
-  document.getElementById('write-reading').textContent=card.reading;
-  document.getElementById('write-answer').style.display='none';
-  document.getElementById('write-meaning').textContent=card.meaning;
-  document.getElementById('write-sentence').textContent=card.sentence||'';
-  clearCanvas();
-}
-function writeNext(dir){
-  buildDeck();
-  writeIdx=(writeIdx+dir+deck.length)%deck.length;
-  setWriteCard();
-}
-function showAnswer(){
-  document.getElementById('write-answer').style.display='block';
-}
-function speakWrite(){
-  if(!deck.length) return;
-  const card=deck[writeIdx];
-  if(!('speechSynthesis' in window)) return;
-  window.speechSynthesis.cancel();
-  const utt=new SpeechSynthesisUtterance(card.kanji+'。'+card.reading.split(' ')[0]);
-  utt.lang='ja-JP'; utt.rate=0.8;
-  window.speechSynthesis.speak(utt);
-}
-
-/* ── KEYBOARD ── */
 document.addEventListener('keydown',e=>{
   if(['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
-  const mode=document.querySelector('.mode-tab.active').dataset.mode;
-  if(mode==='flashcard'){
-    if(e.key==='ArrowRight'||e.key==='l') navigate(1);
-    else if(e.key==='ArrowLeft'||e.key==='h') navigate(-1);
-    else if(e.key===' '||e.key==='f'){e.preventDefault();flipCard();}
-    else if(e.key==='k') markKnown();
-    else if(e.key==='x') markLearning();
-    else if(e.key==='s') speakCard();
-  } else {
-    if(e.key==='ArrowRight') writeNext(1);
-    else if(e.key==='ArrowLeft') writeNext(-1);
-    else if(e.key==='c') clearCanvas();
-    else if(e.key==='a') showAnswer();
-  }
+  if(e.key==='ArrowRight'||e.key==='l') navigate(1);
+  else if(e.key==='ArrowLeft'||e.key==='h') navigate(-1);
+  else if(e.key===' '||e.key==='f'){e.preventDefault();flipCard();}
+  else if(e.key==='k') markKnown();
+  else if(e.key==='x') markLearning();
+  else if(e.key==='s') speakCard();
 });
 
 loadWords();
